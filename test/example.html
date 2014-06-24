@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<script src="../build/build.js"></script>
+	<script>
+		var Emitter = require('component~emitter@1.1.3');
+		var ControlCollection = require('control-collection');
+
+		var i = 0;
+		function createControl() {
+			var name = 'control-'+(++i);
+			var control = new Emitter();
+			control.name = function() {
+				return name;
+			};
+			control.validate = function() {
+				var value = Math.random();
+				var valid = value > 0.5;
+				this.emit('validate', valid, value, this);
+			};
+			return control;
+		}
+
+		var collection = new ControlCollection();
+
+		collection.append(createControl());
+		collection.append(createControl());
+		collection.append(createControl());
+
+		collection.on('validate', function(valid, value) {
+			console.log('validated', valid, value);
+		});
+
+		collection.validate();
+
+		console.log('control-2', collection.named('control-2'));
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+	"name": "control-collection",
+	"scripts": ["index.js"],
+	"dependencies": {
+		"component/emitter": "*",
+		"digitaledgeit/js-wait-for-event": "*"
+	}
+}
