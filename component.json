@@ -2,7 +2,7 @@
 	"name": "control-collection",
 	"scripts": ["index.js"],
 	"dependencies": {
-		"component/emitter": "*",
-		"digitaledgeit/js-wait-for-event": "*"
+		"component/emitter": "1.1.3",
+		"digitaledgeit/js-wait-for-event": "0.1.0"
 	}
 }
