@@ -5,10 +5,19 @@ var emitter = require('emitter');
  * Control collection
  * @constructor
  */
-function ControlCollection() {
+function ControlCollection(options) {
+	this.name = options && options.name || '';
 	this.controls = [];
 }
 emitter(ControlCollection.prototype);
+
+/**
+ * Get the name
+ * @returns {String}
+ */
+ControlCollection.prototype.getName = function() {
+	return this.name;
+};
 
 /**
  * Get the number of controls
@@ -178,15 +187,16 @@ ControlCollection.prototype.validate = function() {
 		this.controls,
 		function(controlIsValid, controlValue, control) {
 			collectionIsValid = collectionIsValid && controlIsValid;
-			collectionValue[control.name()] = controlValue;
+			collectionValue[control.getName()] = controlValue;
 		},
 		function() {
-			self.emit('validate', collectionIsValid, collectionValue);
+			self.emit('validate', collectionIsValid, collectionValue, self);
 		}
 	);
 
 	//validate controls which will trigger the `validate` event
 	for (var i=0; i<this.controls.length; ++i) {
+	console.log('validating');
 		this.controls[i].validate();
 	}
 
