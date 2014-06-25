@@ -66,13 +66,13 @@ ControlCollection.prototype.indexOf = function(control) {
 };
 
 /**
- * Get the control named
+ * Get a control with the name
  * @param   {String} name
  * @returns {Control|null}
  */
 ControlCollection.prototype.named = function(name) {
 	for (var i=0; i<this.controls.length; ++i) {
-		if (this.controls[i].name() === name) {
+		if (this.controls[i].getName() === name) {
 			return this.controls[i];
 		}
 	}
@@ -168,7 +168,7 @@ ControlCollection.prototype.each = function(callback) {
 ControlCollection.prototype.validate = function() {
 	var
 		self                = this,
-		collectionIsValid   = true
+		collectionIsValid   = true,
 		collectionValue     = {}
 	;
 
