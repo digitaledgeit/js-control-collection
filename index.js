@@ -196,7 +196,6 @@ ControlCollection.prototype.validate = function() {
 
 	//validate controls which will trigger the `validate` event
 	for (var i=0; i<this.controls.length; ++i) {
-	console.log('validating');
 		this.controls[i].validate();
 	}
 
