@@ -7,7 +7,6 @@ var emitter = require('emitter');
  */
 function ControlCollection(options) {
 	this.name = options && options.name || '';
-	this.valid = false;
 	this.controls = [];
 }
 emitter(ControlCollection.prototype);
@@ -26,7 +25,11 @@ ControlCollection.prototype.getName = function() {
  * @returns {boolean}
  */
 ControlCollection.prototype.isValid = function() {
-  return this.valid;
+	var valid = true;
+	for (var i=0; i<this.controls.length; ++i) {
+		valid = valid && this.controls[i].isValid();
+	}
+	return valid;
 };
 
 
