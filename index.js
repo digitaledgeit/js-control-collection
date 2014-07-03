@@ -7,6 +7,7 @@ var emitter = require('emitter');
  */
 function ControlCollection(options) {
 	this.name = options && options.name || '';
+	this.valid = false;
 	this.controls = [];
 }
 emitter(ControlCollection.prototype);
@@ -18,6 +19,16 @@ emitter(ControlCollection.prototype);
 ControlCollection.prototype.getName = function() {
 	return this.name;
 };
+
+
+/**
+ * Whether the control has previously passed validation
+ * @returns {boolean}
+ */
+ControlCollection.prototype.isValid = function() {
+  return this.valid;
+};
+
 
 /**
  * Get the number of controls
@@ -190,6 +201,7 @@ ControlCollection.prototype.validate = function() {
 			collectionValue[control.getName()] = controlValue;
 		},
 		function() {
+			self.valid = collectionIsValid;
 			self.emit('validate', collectionIsValid, collectionValue, self);
 		}
 	);
