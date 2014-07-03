@@ -6,20 +6,24 @@
 <body>
 	<script src="../build/build.js"></script>
 	<script>
-		var Emitter = require('component~emitter@1.1.3');
+		var Emitter = require('emitter');
 		var ControlCollection = require('control-collection');
 
 		var i = 0;
 		function createControl() {
 			var name = 'control-'+(++i);
 			var control = new Emitter();
-			control.name = function() {
+			control.valid = false;
+			control.getName = function() {
 				return name;
+			};
+			control.isValid = function() {
+				return control.valid;
 			};
 			control.validate = function() {
 				var value = Math.random();
-				var valid = value > 0.5;
-				this.emit('validate', valid, value, this);
+				control.valid = value > 0.5;
+				this.emit('validate', control.valid, value, this);
 			};
 			return control;
 		}
@@ -37,6 +41,8 @@
 		collection.validate();
 
 		console.log('control-2', collection.named('control-2'));
+		
+		console.log('is-valid', collection.isValid());
 
 	</script>
 </body>
