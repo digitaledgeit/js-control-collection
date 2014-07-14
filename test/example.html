@@ -11,19 +11,35 @@
 
 		var i = 0;
 		function createControl() {
-			var name = 'control-'+(++i);
-			var control = new Emitter();
-			control.valid = false;
+			var name        = 'control-'+(++i);
+            var control     = new Emitter();
+            control.valid   = false;
+            control.value   = Math.random();
 			control.getName = function() {
 				return name;
 			};
+            control.getValue = function() {
+                return control.value;
+            };
+            control.setValue = function(value) {
+                control.value = value;
+                return this;
+            };
 			control.isValid = function() {
 				return control.valid;
 			};
+            control.focus = function() {
+              console.log('focus '+name);
+              return this;
+            };
+            control.clear = function() {
+              control.valid = false;
+              control.value = '';
+              return this;
+            };
 			control.validate = function() {
-				var value = Math.random();
-				control.valid = value > 0.5;
-				this.emit('validate', control.valid, value);
+				control.valid = control.value > 0.5;
+				this.emit('validate', control.valid, control.value);
 			};
 			return control;
 		}
@@ -45,6 +61,19 @@
 		collection.validate();
 
 		console.log('is-valid', collection.isValid());
+
+        console.log('before set value', collection.getValue());
+        collection.setValue({
+            'control-1': 1.1,
+            'control-2': 1.2
+        });
+        console.log('after set value', collection.getValue());
+
+        collection.focus();
+
+        collection.clear();
+
+        console.log('after clear value', collection.getValue(), collection.isValid());
 
 	</script>
 </body>

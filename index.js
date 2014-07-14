@@ -32,6 +32,34 @@ ControlCollection.prototype.getName = function() {
 };
 
 /**
+ * Get the control value
+ * @returns {String}
+ */
+ControlCollection.prototype.getValue = function() {
+  var value = {};
+  for (var i=0; i<this.controls.length; ++i) {
+    var control = this.controls[i];
+    value[control.getName()] = control.getValue();
+  }
+  return value;
+};
+
+/**
+ * Set the control value
+ * @param   {String} value
+ * @returns {ControlCollection}
+ */
+ControlCollection.prototype.setValue = function(value) {
+  for (var i=0; i<this.controls.length; ++i) {
+    var control = this.controls[i];
+    if (value.hasOwnProperty(control.getName())) {
+      control.setValue(value[control.getName()]);
+    }
+  }
+  return this;
+};
+
+/**
  * Whether the control has previously passed validation
  * @returns {boolean}
  */
@@ -41,6 +69,26 @@ ControlCollection.prototype.isValid = function() {
 		valid = valid && this.controls[i].isValid();
 	}
 	return valid;
+};
+
+/**
+ * Focus the control input
+ * @returns {ControlCollection}
+ */
+ControlCollection.prototype.focus = function() {
+  this.first().focus();
+  return this;
+};
+
+/**
+ * Clear the value and validation state
+ * @returns {ControlCollection}
+ */
+ControlCollection.prototype.clear = function() {
+  for (var i=0; i<this.controls.length; ++i) {
+    this.controls[i].clear();
+  }
+  return this;
 };
 
 /**
