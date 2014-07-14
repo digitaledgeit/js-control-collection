@@ -1,9 +1,21 @@
 var wait = require('wait-for-event');
 var emitter = require('emitter');
+var forward = require('forward-events');
+
+//adjust the event name and prepend the emitter to the arguments
+function proxyEvent(type, arguments, src) {
+	arguments.unshift(src);
+	return {
+		type:       'control:'+type,
+		arguments:  arguments
+	}
+}
 
 /**
  * Control collection
  * @constructor
+ * @params  {Object}  options
+ * @params  {String}  options.name    The control name
  */
 function ControlCollection(options) {
 	this.name = options && options.name || '';
@@ -19,7 +31,6 @@ ControlCollection.prototype.getName = function() {
 	return this.name;
 };
 
-
 /**
  * Whether the control has previously passed validation
  * @returns {boolean}
@@ -32,10 +43,9 @@ ControlCollection.prototype.isValid = function() {
 	return valid;
 };
 
-
 /**
  * Get the number of controls
- * @returns {integer}
+ * @returns {number}
  */
 ControlCollection.prototype.count = function() {
 	return this.controls.length;
@@ -51,7 +61,7 @@ ControlCollection.prototype.contains = function(control) {
 
 /**
  * Return the control at the index
- * @param   {int} index
+ * @param   {number} index
  * @returns {Control}
  */
 ControlCollection.prototype.at = function(index) {
@@ -77,7 +87,7 @@ ControlCollection.prototype.last = function() {
 /**
  * Find the index of a control
  * @param   {Control} control
- * @returns {int}
+ * @returns {number}
  */
 ControlCollection.prototype.indexOf = function(control) {
 
@@ -116,6 +126,9 @@ ControlCollection.prototype.prepend = function(control) {
 	//append the control to the array
 	this.controls.unshift(control);
 
+	//forward the control events
+	forward(control, this, proxyEvent);
+
 	return this;
 };
 
@@ -132,6 +145,9 @@ ControlCollection.prototype.append = function(control) {
 
 	//append the control to the array
 	this.controls.push(control);
+
+	//forward the control events
+	forward(control, this, proxyEvent);
 
 	return this;
 };
@@ -199,14 +215,15 @@ ControlCollection.prototype.validate = function() {
 	wait.waitForAll(
 		'validate',
 		this.controls,
-		function(controlIsValid, controlValue, control) {
+		function(control, controlIsValid, controlValue) {
 			collectionIsValid = collectionIsValid && controlIsValid;
 			collectionValue[control.getName()] = controlValue;
 		},
 		function() {
 			self.valid = collectionIsValid;
-			self.emit('validate', collectionIsValid, collectionValue, self);
-		}
+			self.emit('validate', collectionIsValid, collectionValue);
+		},
+		{passMeTheEmitter: true}
 	);
 
 	//validate controls which will trigger the `validate` event

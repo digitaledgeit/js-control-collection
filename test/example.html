@@ -23,7 +23,7 @@
 			control.validate = function() {
 				var value = Math.random();
 				control.valid = value > 0.5;
-				this.emit('validate', control.valid, value, this);
+				this.emit('validate', control.valid, value);
 			};
 			return control;
 		}
@@ -34,14 +34,16 @@
 		collection.append(createControl());
 		collection.append(createControl());
 
+        collection.on('control:validate', function(control, valid, value) {
+            console.log('control:validate', control.getName(), valid, value);
+        });
+
 		collection.on('validate', function(valid, value) {
-			console.log('validated', valid, value);
+			console.log('collection:validate', valid, value);
 		});
 
 		collection.validate();
 
-		console.log('control-2', collection.named('control-2'));
-		
 		console.log('is-valid', collection.isValid());
 
 	</script>
